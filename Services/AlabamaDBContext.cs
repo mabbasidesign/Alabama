@@ -9,7 +9,7 @@ namespace Alabama.Services
 {
     public class AlabamaDBContext: DbContext
     {
-        public AlabamaDBContext(DbContextOptions<DbContext> options)
+        public AlabamaDBContext(DbContextOptions<AlabamaDBContext> options)
             : base(options)
         {
 

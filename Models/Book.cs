@@ -7,7 +7,7 @@ namespace Alabama.Models
 {
     public class Book
     {
-        public int ID { get; set; }
+        public int Id { get; set; }
         public string Isbn { get; set; }
     }
 }
