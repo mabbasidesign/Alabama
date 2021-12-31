@@ -130,7 +130,6 @@ namespace Alabama.Services
         public bool Save()
         {
             var save = _db.SaveChanges();
-
             return save >= 0 ? false : true;
         }
     }
