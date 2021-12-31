@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Alabama.Services
 {
-    interface ICountryRepository
+    public interface ICountryRepository
     {
         ICollection<Country> GetCountries();
         Country GetCountry(int countryId);
