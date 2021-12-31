@@ -60,8 +60,8 @@ namespace Alabama.Services
 
         public bool Save()
         {
-            var save = _db.SaveChanges();
-            return save >= 0 ? false : true;
+            var saved = _db.SaveChanges();
+            return saved >= 0 ? true : false;
         }
 
         public bool UpdateCategory(Category category)
