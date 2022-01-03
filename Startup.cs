@@ -33,6 +33,8 @@ namespace Alabama
 
             services.AddControllers();
             services.AddScoped<IBookRepository, BookRepository>();
+            services.AddScoped<ICountryRepository, CountryRepository>();
+            services.AddScoped<IBookRepository, BookRepository>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Alabama", Version = "v1" });

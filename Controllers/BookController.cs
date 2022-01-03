@@ -148,8 +148,67 @@ namespace Alabama.Controller
         }
 
         //api/books/bookId?authId=1&authId=2&catId=1&catId=2
+        [HttpPut("{bookId}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(422)]
+        [ProducesResponseType(500)]
+        public IActionResult UpdateBook(int bookId, [FromQuery] List<int> authId, [FromQuery] List<int> catId,
+                                        [FromBody] Book bookToUpdate)
+        {
+            var statusCode = ValidateBook(authId, catId, bookToUpdate);
+
+            if (bookId != bookToUpdate.Id)
+                return BadRequest();
+
+            if (!_bookRepository.BookExists(bookId))
+                return NotFound();
+
+            if (!ModelState.IsValid)
+                return StatusCode(statusCode.StatusCode);
+
+            if (!_bookRepository.UpdateBook(authId, catId, bookToUpdate))
+            {
+                ModelState.AddModelError("", $"Something went wrong updating the book " +
+                                            $"{bookToUpdate.Title}");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+        }
 
         //api/books/bookId
+        [HttpDelete("{bookId}")]
+        [ProducesResponseType(204)] //no content
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public IActionResult DeleteBook(int bookId)
+        {
+            if (!_bookRepository.BookExists(bookId))
+                return NotFound();
+
+            var reviewsToDelete = _reviewRepository.GetReviewsOfABook(bookId);
+            var bookToDelete = _bookRepository.GetBook(bookId);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (!_reviewRepository.DeleteReviews(reviewsToDelete.ToList()))
+            {
+                ModelState.AddModelError("", $"Something went wrong deleting reviews");
+                return StatusCode(500, ModelState);
+            }
+
+            if (!_bookRepository.DeleteBook(bookToDelete))
+            {
+                ModelState.AddModelError("", $"Something went wrong deleting book {bookToDelete.Title}");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+        }
 
 
         private StatusCodeResult ValidateBook(List<int> authId, List<int> catId, Book book)
@@ -168,20 +227,20 @@ namespace Alabama.Controller
 
             foreach (var id in authId)
             {
-                //if (!_authorRepository.AuthorExists(id))
-                //{
-                //    ModelState.AddModelError("", "Author Not Found");
-                //    return StatusCode(404);
-                //}
+                if (!_authorRepository.AuthorExists(id))
+                {
+                    ModelState.AddModelError("", "Author Not Found");
+                    return StatusCode(404);
+                }
             }
 
             foreach (var id in catId)
             {
-                //if (!_categoryRepository.CategoryExists(id))
-                //{
-                //    ModelState.AddModelError("", "Category Not Found");
-                //    return StatusCode(404);
-                //}
+                if (!_categoryRepository.CategoryExists(id))
+                {
+                    ModelState.AddModelError("", "Category Not Found");
+                    return StatusCode(404);
+                }
             }
 
             if (!ModelState.IsValid)
