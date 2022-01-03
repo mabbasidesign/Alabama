@@ -33,9 +33,9 @@ namespace Alabama
 
             services.AddControllers();
             services.AddScoped<IBookRepository, BookRepository>();
+            services.AddScoped<IAuthorRepository, AuthorRepository>();
             services.AddScoped<ICountryRepository, CountryRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
-            services.AddScoped<IAuthorRepository, AuthorRepository>();
             services.AddScoped<IReviewRepository, ReviewRepository>();
             services.AddScoped<IReviewerRepository, ReviewerRepository>();
             services.AddSwaggerGen(c =>
